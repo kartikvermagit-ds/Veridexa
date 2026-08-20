@@ -25,12 +25,12 @@ export const CompletenessBar: React.FC<CompletenessBarProps> = ({
   return (
     <div className="w-full">
       {showLabel && (
-        <div className="flex justify-between items-center text-xs mb-1 text-slate-400">
+        <div className="flex justify-between items-center text-xs mb-1.5 text-slate-600 dark:text-slate-400 font-medium">
           <span>Completeness</span>
-          <span className="font-mono text-slate-200 font-medium">{percentage}%</span>
+          <span className="font-mono text-slate-900 dark:text-slate-100 font-bold">{percentage}%</span>
         </div>
       )}
-      <div className={`w-full bg-slate-800 rounded-full overflow-hidden ${heightClass}`}>
+      <div className={`w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden ${heightClass}`}>
         <div
           className={`${heightClass} rounded-full transition-all duration-500 ${barColor}`}
           style={{ width: `${Math.min(100, Math.max(0, percentage))}%` }}

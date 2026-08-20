@@ -9,8 +9,6 @@ import {
   UploadCloud,
   Layers,
   ArrowRight,
-  Sparkles,
-  FileCheck,
   Check
 } from 'lucide-react';
 import { dashboardApi } from '../api/dashboard';
@@ -23,9 +21,11 @@ import { CorePipelineBanner } from '../components/dashboard/CorePipelineBanner';
 import { TrustExplainabilitySection } from '../components/dashboard/TrustExplainabilitySection';
 import { ActiveConflictSpotlight } from '../components/dashboard/ActiveConflictSpotlight';
 import { ConflictModal } from '../components/product/ConflictModal';
+import { useTheme } from '../context/ThemeContext';
 
 export const Dashboard: React.FC = () => {
   const navigate = useNavigate();
+  const { isDark } = useTheme();
   const [isConflictModalOpen, setIsConflictModalOpen] = useState(false);
 
   const { data: statsRes, isLoading: statsLoading } = useQuery({
@@ -42,30 +42,36 @@ export const Dashboard: React.FC = () => {
   const recentProducts = productsRes?.data || [];
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto pb-12">
+    <div className="space-y-8 max-w-7xl mx-auto pb-16">
       {/* 1. Hero Section */}
-      <div className="bg-gradient-to-r from-indigo-950/70 via-surface to-surface rounded-2xl border border-indigo-500/30 p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
+      <div
+        className={`rounded-2xl border p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden transition-all duration-200 ${
+          isDark
+            ? 'bg-gradient-to-r from-indigo-950/70 via-surface to-surface border-indigo-500/30 shadow-2xl'
+            : 'bg-gradient-to-r from-indigo-50 via-white to-white border-indigo-200/80 shadow-sm'
+        }`}
+      >
         <div className="relative z-10 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold mb-3">
-            <span className="w-2 h-2 rounded-full bg-indigo-400"></span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-300 text-xs font-semibold mb-3">
+            <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
             <span>VERIDEXA • AI-Powered Product Intelligence</span>
           </div>
-          <h1 className="text-2xl md:text-4xl font-extrabold text-white tracking-tight">
+          <h1 className={`text-2xl md:text-4xl font-extrabold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
             Transform Industrial Product Data into Trusted Intelligence
           </h1>
-          <p className="text-sm text-slate-300 mt-2.5 leading-relaxed font-sans">
+          <p className={`text-sm mt-2.5 leading-relaxed font-sans ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
             Transform scattered technical datasheets, PDFs, and unstructured catalog specs into structured, validated, enriched, and explainable commerce-ready data.
           </p>
-          <div className="mt-4 flex items-center gap-4 text-xs font-mono text-slate-400">
-            <span className="flex items-center gap-1.5 text-emerald-400">
+          <div className="mt-4 flex flex-wrap items-center gap-4 text-xs font-mono">
+            <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
               <Check className="w-4 h-4" />
               <span>Zero Hallucination Policy</span>
             </span>
-            <span className="flex items-center gap-1.5 text-indigo-300">
+            <span className="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-300 font-medium">
               <Check className="w-4 h-4" />
               <span>Exact Quote Offsets</span>
             </span>
-            <span className="flex items-center gap-1.5 text-purple-300">
+            <span className="flex items-center gap-1.5 text-purple-600 dark:text-purple-300 font-medium">
               <Check className="w-4 h-4" />
               <span>Dual Validation Engine</span>
             </span>
@@ -83,7 +89,11 @@ export const Dashboard: React.FC = () => {
           </button>
           <button
             onClick={() => navigate('/catalog')}
-            className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-surface-elevated hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-surface-border transition-all"
+            className={`flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs font-semibold border transition-all ${
+              isDark
+                ? 'bg-surface-elevated hover:bg-slate-700 text-slate-200 border-surface-border'
+                : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200 shadow-sm'
+            }`}
           >
             <Layers className="w-4 h-4" />
             <span>View Catalog</span>
@@ -94,7 +104,7 @@ export const Dashboard: React.FC = () => {
       {/* 2. Core 6-Stage Pipeline Banner */}
       <CorePipelineBanner />
 
-      {/* 3. Primary Meaningful KPI Metrics (WHAT, WHY, STATUS) */}
+      {/* 3. Primary Meaningful KPI Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title="Catalog Master Records"
@@ -140,15 +150,25 @@ export const Dashboard: React.FC = () => {
       />
 
       {/* 6. Recent Ingested Products Table */}
-      <div className="bg-surface rounded-2xl border border-surface-border p-6 shadow-xl space-y-4">
-        <div className="flex items-center justify-between pb-4 border-b border-surface-border">
+      <div
+        className={`rounded-2xl border p-6 space-y-4 transition-all duration-200 ${
+          isDark
+            ? 'bg-surface border-surface-border shadow-xl'
+            : 'bg-white border-slate-200 shadow-sm'
+        }`}
+      >
+        <div className={`flex items-center justify-between pb-4 border-b ${isDark ? 'border-surface-border' : 'border-slate-200'}`}>
           <div>
-            <h3 className="text-base font-bold text-white tracking-tight">Recent Industrial Products</h3>
-            <p className="text-xs text-slate-400 font-mono">Latest AI extractions with verification status</p>
+            <h3 className={`text-base font-bold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              Recent Industrial Products
+            </h3>
+            <p className={`text-xs font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+              Latest AI extractions with verification status
+            </p>
           </div>
           <button
             onClick={() => navigate('/catalog')}
-            className="text-xs text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1"
+            className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-semibold flex items-center gap-1"
           >
             <span>View All</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -162,14 +182,14 @@ export const Dashboard: React.FC = () => {
             <Skeleton className="h-10 w-full" />
           </div>
         ) : recentProducts.length === 0 ? (
-          <div className="text-center py-8 text-slate-400 text-xs">
+          <div className={`text-center py-8 text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
             No products found. Process your first datasheet to get started!
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-surface-border text-slate-400 uppercase font-mono text-[10px]">
+                <tr className={`border-b uppercase font-mono text-[10px] ${isDark ? 'border-surface-border text-slate-400' : 'border-slate-200 text-slate-500'}`}>
                   <th className="pb-3 font-semibold">SKU / Model</th>
                   <th className="pb-3 font-semibold">Product Name</th>
                   <th className="pb-3 font-semibold">Category</th>
@@ -178,18 +198,20 @@ export const Dashboard: React.FC = () => {
                   <th className="pb-3 font-semibold text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-surface-border/50">
+              <tbody className={`divide-y ${isDark ? 'divide-surface-border/50' : 'divide-slate-100'}`}>
                 {recentProducts.map((product) => (
                   <tr
                     key={product.id}
                     onClick={() => navigate(`/catalog/${product.id}`)}
-                    className="hover:bg-surface-elevated/60 transition-colors cursor-pointer group"
+                    className={`transition-colors cursor-pointer group ${
+                      isDark ? 'hover:bg-surface-elevated/60' : 'hover:bg-slate-50'
+                    }`}
                   >
-                    <td className="py-3.5 font-mono text-indigo-300 font-medium">{product.sku}</td>
-                    <td className="py-3.5 font-semibold text-white group-hover:text-indigo-300 transition-colors">
+                    <td className="py-3.5 font-mono text-indigo-600 dark:text-indigo-300 font-semibold">{product.sku}</td>
+                    <td className={`py-3.5 font-semibold transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-300 ${isDark ? 'text-white' : 'text-slate-900'}`}>
                       {product.product_name}
                     </td>
-                    <td className="py-3.5 text-slate-400">{product.category}</td>
+                    <td className={`py-3.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>{product.category}</td>
                     <td className="py-3.5">
                       <ValidationBadge status={product.validation_status} size="sm" />
                     </td>
@@ -197,7 +219,7 @@ export const Dashboard: React.FC = () => {
                       <ConfidenceBadge confidence={product.overall_confidence} size="sm" />
                     </td>
                     <td className="py-3.5 text-right">
-                      <span className="text-indigo-400 hover:text-indigo-300 font-semibold text-xs inline-flex items-center gap-1">
+                      <span className="text-indigo-600 dark:text-indigo-400 font-semibold text-xs inline-flex items-center gap-1">
                         <span>Inspect</span>
                         <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
                       </span>

@@ -22,10 +22,10 @@ export default {
           950: '#0B0F19',
         },
         surface: {
-          DEFAULT: '#111827',
-          elevated: '#1F2937',
-          border: '#374151',
-          highlight: '#4B5563',
+          DEFAULT: 'var(--bg-surface)',
+          elevated: 'var(--bg-surface-elevated)',
+          border: 'var(--border-surface)',
+          subtle: 'var(--border-subtle)',
         },
         brand: {
           50: '#EEF2FF',
