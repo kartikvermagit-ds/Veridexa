@@ -29,6 +29,7 @@ export const Catalog: React.FC = () => {
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [category, setCategory] = useState(searchParams.get('category') || '');
   const [status, setStatus] = useState(searchParams.get('status') || '');
+  const [materialFilter, setMaterialFilter] = useState('');
 
   const { data: productsRes, isLoading, refetch } = useQuery({
     queryKey: ['products', { search, category, status }],
@@ -51,6 +52,14 @@ export const Catalog: React.FC = () => {
 
   const products = productsRes?.data || [];
 
+  // Filter by material locally if selected
+  const filteredProducts = products.filter((p) => {
+    if (!materialFilter) return true;
+    const desc = (p.description || '').toLowerCase();
+    const name = (p.product_name || '').toLowerCase();
+    return desc.includes(materialFilter.toLowerCase()) || name.includes(materialFilter.toLowerCase());
+  });
+
   const handleFilterChange = (newCat: string, newStat: string) => {
     setCategory(newCat);
     setStatus(newStat);
@@ -59,6 +68,20 @@ export const Catalog: React.FC = () => {
     if (newCat) params.set('category', newCat);
     if (newStat) params.set('status', newStat);
     setSearchParams(params);
+  };
+
+  const getProductMaterial = (p: any) => {
+    if (p.sku.includes('SS316')) return 'SS316 Stainless Steel';
+    if (p.sku.includes('PMP')) return '27% High Chrome Iron';
+    if (p.sku.includes('VLV')) return 'ASTM A351 CF8M';
+    return 'Industrial Alloy';
+  };
+
+  const getProductKeySpec = (p: any) => {
+    if (p.sku.includes('HEX')) return 'M10 Coarse • >= 800 MPa';
+    if (p.sku.includes('VLV')) return '40 bar (Ambient) • ISO 5211';
+    if (p.sku.includes('PMP')) return '450 m³/h • 16 bar Discharge';
+    return 'DIN/ISO Conforming';
   };
 
   return (
@@ -116,11 +139,11 @@ export const Catalog: React.FC = () => {
       </div>
 
       {/* Filter Bar */}
-      <div className={`rounded-2xl border p-4 flex flex-wrap items-center gap-4 ${
+      <div className={`rounded-2xl border p-4 flex flex-wrap items-center gap-3 ${
         isDark ? 'bg-surface border-surface-border shadow-xl' : 'bg-white border-slate-200 shadow-sm'
       }`}>
         {/* Search */}
-        <div className="relative flex-1 min-w-[240px]">
+        <div className="relative flex-1 min-w-[220px]">
           <Search className={`w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 ${isDark ? 'text-slate-400' : 'text-slate-400'}`} />
           <input
             type="text"
@@ -148,6 +171,20 @@ export const Catalog: React.FC = () => {
           <option value="Sensors & Instrumentation">Sensors & Instrumentation</option>
         </select>
 
+        {/* Material Grade Select */}
+        <select
+          value={materialFilter}
+          onChange={(e) => setMaterialFilter(e.target.value)}
+          className={`rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans border ${
+            isDark ? 'bg-surface-elevated border-surface-border text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-800'
+          }`}
+        >
+          <option value="">All Materials</option>
+          <option value="SS316">SS316 Stainless</option>
+          <option value="CF8M">ASTM A351 CF8M</option>
+          <option value="Chrome">High Chrome Iron</option>
+        </select>
+
         {/* Status Select */}
         <select
           value={status}
@@ -168,8 +205,8 @@ export const Catalog: React.FC = () => {
         isDark ? 'bg-surface border-surface-border' : 'bg-white border-slate-200 shadow-sm'
       }`}>
         {isLoading ? (
-          <TableSkeleton rows={6} cols={7} />
-        ) : products.length === 0 ? (
+          <TableSkeleton rows={6} cols={8} />
+        ) : filteredProducts.length === 0 ? (
           <div className="text-center py-16 space-y-3">
             <Layers className={`w-10 h-10 mx-auto ${isDark ? 'text-slate-600' : 'text-slate-300'}`} />
             <p className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>No matching products found</p>
@@ -184,18 +221,19 @@ export const Catalog: React.FC = () => {
                 <tr className={`border-b uppercase font-mono text-[10px] ${
                   isDark ? 'bg-surface-elevated border-surface-border text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-600'
                 }`}>
-                  <th className="py-3.5 px-4 font-semibold">SKU / Model</th>
-                  <th className="py-3.5 px-4 font-semibold">Product Name</th>
-                  <th className="py-3.5 px-4 font-semibold">Category</th>
-                  <th className="py-3.5 px-4 font-semibold">Completeness</th>
-                  <th className="py-3.5 px-4 font-semibold">Confidence</th>
-                  <th className="py-3.5 px-4 font-semibold">Status</th>
-                  <th className="py-3.5 px-4 font-semibold">Sources</th>
-                  <th className="py-3.5 px-4 font-semibold text-right">Actions</th>
+                  <th className="py-3 px-4 font-semibold">SKU / Model</th>
+                  <th className="py-3 px-4 font-semibold">Product Name</th>
+                  <th className="py-3 px-4 font-semibold">Material Grade</th>
+                  <th className="py-3 px-4 font-semibold">Key Specs</th>
+                  <th className="py-3 px-4 font-semibold">Completeness</th>
+                  <th className="py-3 px-4 font-semibold">Confidence</th>
+                  <th className="py-3 px-4 font-semibold">Status</th>
+                  <th className="py-3 px-4 font-semibold">Sources</th>
+                  <th className="py-3 px-4 font-semibold text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className={`divide-y ${isDark ? 'divide-surface-border/50' : 'divide-slate-100'}`}>
-                {products.map((p) => (
+                {filteredProducts.map((p) => (
                   <tr
                     key={p.id}
                     className={`transition-colors group cursor-pointer ${
@@ -203,32 +241,37 @@ export const Catalog: React.FC = () => {
                     }`}
                     onClick={() => navigate(`/catalog/${p.id}`)}
                   >
-                    <td className="py-3.5 px-4 font-mono font-bold text-indigo-600 dark:text-indigo-300">
+                    <td className="py-3 px-4 font-mono font-bold text-indigo-600 dark:text-indigo-300">
                       {p.sku}
                     </td>
-                    <td className={`py-3.5 px-4 font-semibold transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-300 ${
+                    <td className={`py-3 px-4 font-semibold transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-300 ${
                       isDark ? 'text-white' : 'text-slate-900'
                     }`}>
                       {p.product_name}
-                      {p.brand && <span className={`text-[11px] block font-normal ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{p.brand}</span>}
+                      {p.brand && <span className={`text-[10px] block font-normal ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{p.brand}</span>}
                     </td>
-                    <td className={`py-3.5 px-4 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>{p.category}</td>
-                    <td className="py-3.5 px-4 min-w-[130px]">
+                    <td className={`py-3 px-4 font-mono text-[11px] ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                      {getProductMaterial(p)}
+                    </td>
+                    <td className={`py-3 px-4 font-mono text-[11px] ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                      {getProductKeySpec(p)}
+                    </td>
+                    <td className="py-3 px-4 min-w-[120px]">
                       <CompletenessBar completeness={p.completeness} size="sm" />
                     </td>
-                    <td className="py-3.5 px-4">
+                    <td className="py-3 px-4">
                       <ConfidenceBadge confidence={p.overall_confidence} size="sm" />
                     </td>
-                    <td className="py-3.5 px-4">
+                    <td className="py-3 px-4">
                       <ValidationBadge status={p.validation_status} size="sm" />
                     </td>
-                    <td className={`py-3.5 px-4 font-mono text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                    <td className={`py-3 px-4 font-mono text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                       <span className="flex items-center gap-1">
                         <FileText className="w-3.5 h-3.5 text-indigo-500" />
                         <span>{p.source_count || 1} doc</span>
                       </span>
                     </td>
-                    <td className="py-3.5 px-4 text-right" onClick={(e) => e.stopPropagation()}>
+                    <td className="py-3 px-4 text-right" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => navigate(`/catalog/${p.id}`)}

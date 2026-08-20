@@ -67,6 +67,7 @@ export interface ProductListItem {
   brand?: string;
   category: string;
   subcategory?: string;
+  description?: string;
   completeness: number;
   overall_confidence: number;
   validation_status: ValidationStatus;
