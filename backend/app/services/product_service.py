@@ -5,7 +5,7 @@ from app.models.product import Product, ValidationStatus
 from app.models.product_attribute import ProductAttribute, OriginType, AttributeStatus
 from app.models.source import ProductSource, SourceType
 from app.models.evidence import ProductEvidence
-from app.models.validation import ValidationResult
+from app.models.validation import ValidationResult, ValidationResultStatus
 from app.models.enrichment import EnrichmentResult
 from app.repositories.product_repository import ProductRepository
 from app.services.confidence_service import ConfidenceService
