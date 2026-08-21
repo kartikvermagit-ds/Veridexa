@@ -67,9 +67,9 @@ export const TrustExplainabilitySection: React.FC<TrustExplainabilitySectionProp
               Verification & Explainability
             </span>
           </div>
-          <h3 className={`text-base font-bold tracking-tight mt-0.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-            Trust & Evidence Grounding Engine
-          </h3>
+          <h2 className={`text-base font-bold tracking-tight mt-0.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            Zero-Hallucination & Mathematical Trust Framework
+          </h2>
           <p className={`text-xs mt-0.5 font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
             Every product attribute is traceable to source coordinates, page numbers, and validation logs
           </p>

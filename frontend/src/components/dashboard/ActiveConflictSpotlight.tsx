@@ -43,9 +43,9 @@ export const ActiveConflictSpotlight: React.FC<ActiveConflictSpotlightProps> = (
                 Needs Review
               </span>
             </div>
-            <h4 className={`text-sm font-bold tracking-tight mt-0.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              {productName} (SKU: {sku})
-            </h4>
+            <h2 className={`text-sm font-bold tracking-tight mt-0.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              Multi-Source Conflict Spotlight: {sku}
+            </h2>
           </div>
         </div>
 

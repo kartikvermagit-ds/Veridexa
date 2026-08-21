@@ -79,9 +79,9 @@ export const ConflictModal: React.FC<ConflictModalProps> = ({
               <AlertTriangle className="w-5 h-5" />
             </div>
             <div>
-              <h3 className={`text-base font-bold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              <h2 className={`text-base font-bold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 Specification Discrepancy
-              </h3>
+              </h2>
               <p className="text-xs text-rose-600 dark:text-rose-300 font-mono">
                 Field in conflict: <span className="font-bold underline">{fieldName}</span>
               </p>

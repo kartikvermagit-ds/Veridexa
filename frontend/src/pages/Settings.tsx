@@ -36,10 +36,10 @@ export const Settings: React.FC = () => {
         <div className={`rounded-2xl border p-6 space-y-4 ${
           isDark ? 'bg-surface border-surface-border shadow-xl' : 'bg-white border-slate-200 shadow-sm'
         }`}>
-          <h3 className={`text-sm font-bold uppercase tracking-wider flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+          <h2 className={`text-sm font-bold uppercase tracking-wider flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
             <Cpu className="w-4 h-4 text-indigo-500" />
             <span>AI Extraction & Enrichment Provider</span>
-          </h3>
+          </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <label
@@ -121,10 +121,10 @@ export const Settings: React.FC = () => {
           isDark ? 'bg-surface border-surface-border shadow-xl' : 'bg-white border-slate-200 shadow-sm'
         }`}>
           <div className={`flex items-center justify-between pb-3 border-b ${isDark ? 'border-surface-border' : 'border-slate-200'}`}>
-            <h3 className={`text-sm font-bold uppercase tracking-wider flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            <h2 className={`text-sm font-bold uppercase tracking-wider flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
               <ShieldCheck className="w-4 h-4 text-emerald-500" />
               <span>Confidence Weighting Formula</span>
-            </h3>
+            </h2>
             <span className="font-mono text-xs text-indigo-600 dark:text-indigo-400 font-bold">
               Total Weight: {evidenceWeight + validationWeight + qualityWeight + sourceWeight}%
             </span>

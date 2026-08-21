@@ -60,9 +60,9 @@ export const EvidenceDrawer: React.FC<EvidenceDrawerProps> = ({
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           <div className={`rounded-xl p-4 border ${isDark ? 'bg-surface-elevated border-surface-border' : 'bg-slate-50 border-slate-200'}`}>
-            <h4 className={`text-xs font-semibold uppercase tracking-wider mb-2 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+            <h3 className={`text-xs font-semibold uppercase tracking-wider mb-2 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
               Ground Truth Specification
-            </h4>
+            </h3>
             <div className="grid grid-cols-2 gap-4 text-xs font-mono">
               <div>
                 <span className={isDark ? 'text-slate-400' : 'text-slate-500'}>Attribute:</span>
@@ -84,13 +84,13 @@ export const EvidenceDrawer: React.FC<EvidenceDrawerProps> = ({
           </div>
 
           <div>
-            <h4 className={`text-xs font-semibold uppercase tracking-wider mb-3 flex items-center justify-between ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+            <h3 className={`text-xs font-semibold uppercase tracking-wider mb-3 flex items-center justify-between ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
               <span>Citations & Snippets ({attribute.evidence.length})</span>
               <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono flex items-center gap-1 font-bold">
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 Verified in Document
               </span>
-            </h4>
+            </h3>
 
             {attribute.evidence.length === 0 ? (
               <div className={`text-center py-8 text-xs rounded-xl border border-dashed ${isDark ? 'bg-surface-elevated/40 text-slate-400 border-surface-border' : 'bg-slate-50 text-slate-500 border-slate-200'}`}>

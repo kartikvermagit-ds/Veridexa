@@ -115,9 +115,9 @@ export const CorePipelineBanner: React.FC = () => {
               Live Interactive Pipeline
             </span>
           </div>
-          <h3 className={`text-base font-bold tracking-tight mt-0.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+          <h2 className={`text-base font-bold tracking-tight mt-0.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
             Extract → Validate → Enrich → Explain → Commerce
-          </h3>
+          </h2>
         </div>
         <p className={`text-xs font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
           Click any stage to inspect real-time artifacts
@@ -141,9 +141,9 @@ export const CorePipelineBanner: React.FC = () => {
                   <span className="text-[10px] font-mono font-bold opacity-60">STAGE {st.step}</span>
                   <Icon className="w-4 h-4 transition-transform group-hover:scale-110" />
                 </div>
-                <h4 className={`text-xs font-extrabold tracking-wider uppercase font-mono ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                <h3 className={`text-xs font-extrabold tracking-wider uppercase font-mono ${isDark ? 'text-white' : 'text-slate-900'}`}>
                   {st.name}
-                </h4>
+                </h3>
                 <p className={`text-[11px] mt-1 leading-snug line-clamp-2 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
                   {st.desc}
                 </p>

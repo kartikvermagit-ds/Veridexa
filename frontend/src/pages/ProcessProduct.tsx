@@ -230,9 +230,9 @@ Motor Power: 50 HP (37 kW) 460 V 3-Phase 60Hz.`
                         </span>
                         <span className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{p.category}</span>
                       </div>
-                      <h4 className={`text-sm font-bold transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-300 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                      <h2 className={`text-sm font-bold transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-300 ${isDark ? 'text-white' : 'text-slate-900'}`}>
                         {p.title}
-                      </h4>
+                      </h2>
                       <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>{p.desc}</p>
                     </div>
                     <div className={`mt-4 pt-3 border-t flex items-center justify-between text-xs text-indigo-600 dark:text-indigo-400 font-bold ${isDark ? 'border-surface-border/50' : 'border-slate-200'}`}>

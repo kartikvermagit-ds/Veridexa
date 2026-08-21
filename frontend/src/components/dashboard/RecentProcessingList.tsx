@@ -73,9 +73,9 @@ export const RecentProcessingList: React.FC = () => {
               Real-Time Feed
             </span>
           </div>
-          <h3 className={`text-base font-bold tracking-tight mt-0.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+          <h2 className={`text-base font-bold tracking-tight mt-0.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
             Recent Processing Activity
-          </h3>
+          </h2>
         </div>
         <button
           onClick={() => navigate('/catalog')}

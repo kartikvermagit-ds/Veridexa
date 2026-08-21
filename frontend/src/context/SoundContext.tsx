@@ -30,25 +30,26 @@ export const SoundProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const target = e.target as HTMLElement | null;
       if (!target) return;
 
-      // Check if clicked element or its parent is interactive
-      const interactiveEl = target.closest(
-        'button, a, input[type="radio"], input[type="checkbox"], select, [role="button"], [role="tab"], .cursor-pointer'
-      );
+      // Defer DOM check and audio playback to non-blocking microtask so UI Paint / INP is never delayed
+      setTimeout(() => {
+        const interactiveEl = target.closest(
+          'button, a, input[type="radio"], input[type="checkbox"], select, [role="button"], [role="tab"], .cursor-pointer'
+        );
 
-      if (interactiveEl) {
-        // Higher pitch for primary buttons, standard for others
-        if (interactiveEl.classList.contains('bg-indigo-600') || interactiveEl.classList.contains('bg-emerald-600')) {
-          sound.playClick(1.15);
-        } else if (interactiveEl.tagName === 'INPUT' || interactiveEl.tagName === 'SELECT') {
-          sound.playSoftClick();
-        } else {
-          sound.playClick(1.0);
+        if (interactiveEl) {
+          if (interactiveEl.classList.contains('bg-indigo-600') || interactiveEl.classList.contains('bg-emerald-600')) {
+            sound.playClick(1.15);
+          } else if (interactiveEl.tagName === 'INPUT' || interactiveEl.tagName === 'SELECT') {
+            sound.playSoftClick();
+          } else {
+            sound.playClick(1.0);
+          }
         }
-      }
+      }, 0);
     };
 
-    window.addEventListener('click', handleGlobalClick, { capture: true, passive: true });
-    return () => window.removeEventListener('click', handleGlobalClick, { capture: true });
+    window.addEventListener('click', handleGlobalClick, { capture: false, passive: true });
+    return () => window.removeEventListener('click', handleGlobalClick);
   }, [isSoundEnabled]);
 
   return (

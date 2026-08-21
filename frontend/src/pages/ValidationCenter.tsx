@@ -211,9 +211,9 @@ export const ValidationCenter: React.FC = () => {
           isDark ? 'bg-surface border-surface-border shadow-xl' : 'bg-white border-slate-200 shadow-sm'
         }`}>
           <div className={`pb-3 border-b ${isDark ? 'border-surface-border' : 'border-slate-200'}`}>
-            <h3 className={`text-base font-bold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            <h2 className={`text-base font-bold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
               Active Deterministic Rule Catalog
-            </h3>
+            </h2>
             <p className={`text-xs font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               Enforced across all incoming technical documents and catalog records
             </p>
@@ -276,7 +276,7 @@ export const ValidationCenter: React.FC = () => {
               <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 mx-auto flex items-center justify-center">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
-              <h3 className={`text-base font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>No Validation Issues Found</h3>
+              <h2 className={`text-base font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>No Validation Issues Found</h2>
               <p className={`text-xs max-w-sm mx-auto ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                 All indexed products conform to standard engineering ranges and have no unresolved multi-source contradictions.
               </p>

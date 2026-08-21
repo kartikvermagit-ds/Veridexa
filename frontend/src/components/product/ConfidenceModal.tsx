@@ -64,9 +64,9 @@ export const ConfidenceModal: React.FC<ConfidenceModalProps> = ({
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <h3 className={`text-base font-bold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              <h2 className={`text-base font-bold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 Confidence Signal Breakdown
-              </h3>
+              </h2>
               <p className={`text-xs font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                 {attribute.name}: <span className="text-indigo-600 dark:text-indigo-300 font-bold">{attribute.value}</span>
               </p>
@@ -101,10 +101,10 @@ export const ConfidenceModal: React.FC<ConfidenceModalProps> = ({
 
         {/* Mathematical Signals List */}
         <div className="space-y-3">
-          <h4 className={`text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+          <h3 className={`text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
             <Info className="w-3.5 h-3.5 text-indigo-500" />
             <span>Underlying Verification Signals</span>
-          </h4>
+          </h3>
 
           {signals.map((sig, i) => (
             <div

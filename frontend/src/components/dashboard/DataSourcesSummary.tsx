@@ -29,9 +29,9 @@ export const DataSourcesSummary: React.FC = () => {
               Ingestion Inventory
             </span>
           </div>
-          <h3 className={`text-base font-bold tracking-tight mt-0.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+          <h2 className={`text-base font-bold tracking-tight mt-0.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
             Ingested Data Sources ({total})
-          </h3>
+          </h2>
         </div>
         <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">
           <Database className="w-4 h-4" />

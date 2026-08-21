@@ -235,12 +235,12 @@ export const ProductDetail: React.FC = () => {
               <AlertTriangle className="w-6 h-6" />
             </div>
             <div>
-              <h4 className={`text-sm sm:text-base font-bold flex flex-wrap items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              <h2 className={`text-sm sm:text-base font-bold flex flex-wrap items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 <span>Multi-Source Conflict Detected</span>
                 <span className="text-[10px] px-2 py-0.5 rounded bg-rose-500/20 text-rose-700 dark:text-rose-300 font-mono font-bold">
                   Field: {activeConflict.field_name || 'Specification'}
                 </span>
-              </h4>
+              </h2>
               <p className={`text-xs mt-1 leading-relaxed ${isDark ? 'text-rose-200' : 'text-rose-800'}`}>
                 {activeConflict.message || 'Contradictory values detected across ingested technical sources. Veridexa avoids guessing and flags for engineer sign-off.'}
               </p>
@@ -260,10 +260,10 @@ export const ProductDetail: React.FC = () => {
       <div className="space-y-4">
         <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b ${isDark ? 'border-surface-border' : 'border-slate-200'}`}>
           <div>
-            <h3 className={`text-base font-bold tracking-tight flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            <h2 className={`text-base font-bold tracking-tight flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
               <Layers className="w-4 h-4 text-indigo-500" />
               <span>Structured Specifications & Grounding</span>
-            </h3>
+            </h2>
             <p className={`text-xs font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               Directly grounded in source text or domain models
             </p>
@@ -343,9 +343,9 @@ export const ProductDetail: React.FC = () => {
                 <Sparkles className="w-4 h-4" />
               </div>
               <div>
-                <h3 className={`text-base font-bold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                <h2 className={`text-base font-bold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
                   AI Domain Enrichments & Compatibility Notes
-                </h3>
+                </h2>
                 <p className={`text-xs font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                   Synthesized applications and standards derived with transparent engineering rationale
                 </p>
@@ -396,9 +396,9 @@ export const ProductDetail: React.FC = () => {
                 <CheckCircle2 className="w-4 h-4" />
               </div>
               <div>
-                <h3 className={`text-base font-bold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                <h2 className={`text-base font-bold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
                   Deterministic & Semantic Validation Audit
-                </h3>
+                </h2>
                 <p className={`text-xs font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                   Automated rule checks against standard SI engineering units and physical boundaries
                 </p>
@@ -418,11 +418,11 @@ export const ProductDetail: React.FC = () => {
                       ? isDark
                         ? 'bg-rose-950/20 border-rose-500/30 text-rose-200'
                         : 'bg-rose-50 border-rose-200 text-rose-900'
-                      : isPass
+                    : isPass
                       ? isDark
                         ? 'bg-surface-elevated/50 border-emerald-500/20 text-slate-200'
                         : 'bg-slate-50 border-emerald-200 text-slate-800'
-                      : isDark
+                    : isDark
                       ? 'bg-surface-elevated/50 border-amber-500/20 text-amber-200'
                       : 'bg-amber-50 border-amber-200 text-amber-900'
                   }`}
@@ -470,10 +470,10 @@ export const ProductDetail: React.FC = () => {
           isDark ? 'bg-surface border-surface-border shadow-xl' : 'bg-white border-slate-200 shadow-sm'
         }`}>
           <div className={`flex items-center justify-between pb-3 border-b ${isDark ? 'border-surface-border' : 'border-slate-200'}`}>
-            <h3 className={`text-base font-bold tracking-tight flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            <h2 className={`text-base font-bold tracking-tight flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
               <FileText className="w-4 h-4 text-indigo-500" />
               <span>Ingested Technical Artifacts & Sources ({product.sources.length})</span>
-            </h3>
+            </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

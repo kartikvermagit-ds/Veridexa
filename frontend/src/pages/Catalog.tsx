@@ -231,9 +231,9 @@ export const Catalog: React.FC = () => {
                       <span className="font-mono text-xs font-bold text-indigo-600 dark:text-indigo-400 block">
                         {p.sku}
                       </span>
-                      <h4 className={`text-sm font-bold mt-0.5 leading-snug ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                      <h2 className={`text-sm font-bold mt-0.5 leading-snug ${isDark ? 'text-white' : 'text-slate-900'}`}>
                         {p.product_name}
-                      </h4>
+                      </h2>
                       {p.brand && (
                         <span className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                           Brand: {p.brand}
