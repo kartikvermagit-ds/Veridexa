@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, AlertTriangle, CheckCircle, FileText, Globe } from 'lucide-react';
 import { validationApi } from '../../api/validation';
 import { useTheme } from '../../context/ThemeContext';
+import { sound } from '../../utils/sound';
 
 interface ConflictModalProps {
   isOpen: boolean;
@@ -55,6 +56,7 @@ export const ConflictModal: React.FC<ConflictModalProps> = ({
         selected_source: chosenSource,
         resolution_notes: `Manual resolution by domain engineer: selected ${chosenVal}`
       });
+      sound.playResolved();
       onResolved();
       onClose();
     } catch (e: any) {

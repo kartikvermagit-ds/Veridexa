@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, FileSpreadsheet, Download, ChevronDown, Check, X, Menu } from 'lucide-react';
 import { dashboardApi } from '../../api/dashboard';
 import { ThemeToggle } from './ThemeToggle';
+import { SoundToggle } from './SoundToggle';
 import { VeridexaLogo } from '../brand/VeridexaLogo';
 import { useTheme } from '../../context/ThemeContext';
 
@@ -267,6 +268,9 @@ export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileMenu }) => {
             <span>CSV</span>
           </button>
         </div>
+
+        {/* Sound Effects Toggle */}
+        <SoundToggle />
 
         {/* Theme Switcher Toggle */}
         <ThemeToggle />
