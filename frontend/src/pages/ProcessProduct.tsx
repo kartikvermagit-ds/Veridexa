@@ -168,41 +168,41 @@ Motor Power: 50 HP (37 kW) 460 V 3-Phase 60Hz.`
           isDark ? 'bg-surface border-surface-border shadow-xl' : 'bg-white border-slate-200 shadow-sm'
         }`}>
           {/* Ingestion Mode Tabs */}
-          <div className={`flex items-center gap-2 p-1.5 rounded-xl border ${
+          <div className={`flex flex-col sm:flex-row items-stretch gap-1.5 p-1.5 rounded-xl border ${
             isDark ? 'bg-surface-elevated border-surface-border' : 'bg-slate-100 border-slate-200'
           }`}>
             <button
               onClick={() => setActiveTab('presets')}
-              className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+              className={`flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 ${
                 activeTab === 'presets'
                   ? 'bg-indigo-600 text-white shadow-md'
                   : isDark ? 'text-slate-400 hover:text-slate-200' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Benchmark Presets (Instant Demo)</span>
+              <span>Benchmark Presets</span>
             </button>
             <button
               onClick={() => setActiveTab('upload')}
-              className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+              className={`flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 ${
                 activeTab === 'upload'
                   ? 'bg-indigo-600 text-white shadow-md'
                   : isDark ? 'text-slate-400 hover:text-slate-200' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <UploadCloud className="w-3.5 h-3.5" />
-              <span>Upload PDF Datasheet</span>
+              <span>Upload PDF</span>
             </button>
             <button
               onClick={() => setActiveTab('text')}
-              className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+              className={`flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 ${
                 activeTab === 'text'
                   ? 'bg-indigo-600 text-white shadow-md'
                   : isDark ? 'text-slate-400 hover:text-slate-200' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <FileText className="w-3.5 h-3.5" />
-              <span>Paste Technical Text</span>
+              <span>Paste Text</span>
             </button>
           </div>
 

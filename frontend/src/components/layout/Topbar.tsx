@@ -1,14 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, FileSpreadsheet, Download, Sparkles, ChevronDown, Check, X } from 'lucide-react';
+import { Search, FileSpreadsheet, Download, ChevronDown, Check, X, Menu } from 'lucide-react';
 import { dashboardApi } from '../../api/dashboard';
 import { ThemeToggle } from './ThemeToggle';
+import { VeridexaLogo } from '../brand/VeridexaLogo';
 import { useTheme } from '../../context/ThemeContext';
 
-export const Topbar: React.FC = () => {
+interface TopbarProps {
+  onOpenMobileMenu?: () => void;
+}
+
+export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileMenu }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [showDemoDropdown, setShowDemoDropdown] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [selectedDemo, setSelectedDemo] = useState('Standard Catalog (3 Products)');
   const searchRef = useRef<HTMLDivElement>(null);
   const demoRef = useRef<HTMLDivElement>(null);
@@ -48,6 +54,7 @@ export const Topbar: React.FC = () => {
     e.preventDefault();
     if (searchQuery.trim()) {
       setShowSearchDropdown(false);
+      setIsMobileSearchOpen(false);
       navigate(`/catalog?search=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
@@ -55,28 +62,45 @@ export const Topbar: React.FC = () => {
   const handleSelectRecent = (term: string) => {
     setSearchQuery(term);
     setShowSearchDropdown(false);
+    setIsMobileSearchOpen(false);
     navigate(`/catalog?search=${encodeURIComponent(term)}`);
   };
 
   return (
     <header
-      className={`h-16 backdrop-blur border-b px-6 flex items-center justify-between sticky top-0 z-30 transition-colors duration-200 ${
+      className={`h-16 backdrop-blur border-b px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 transition-colors duration-200 ${
         isDark
           ? 'bg-surface/80 border-surface-border'
           : 'bg-white/80 border-slate-200 shadow-xs'
       }`}
     >
-      {/* Global Auto-suggesting Search Bar */}
-      <div className="relative w-full max-w-md" ref={searchRef}>
-        <form onSubmit={handleSearchSubmit} className="relative">
+      {/* Left: Mobile Hamburger & Logo on mobile */}
+      <div className="flex items-center gap-3 md:hidden">
+        <button
+          onClick={onOpenMobileMenu}
+          className={`p-2 rounded-xl border transition-all ${
+            isDark ? 'bg-surface-elevated text-slate-300 hover:text-white border-surface-border' : 'bg-slate-100 text-slate-700 hover:text-slate-900 border-slate-200'
+          }`}
+          aria-label="Open mobile menu"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+        <div className="sm:hidden">
+          <VeridexaLogo variant="icon" size="sm" />
+        </div>
+      </div>
+
+      {/* Global Auto-suggesting Search Bar (Desktop + Mobile overlay) */}
+      <div className={`relative w-full max-w-md ${isMobileSearchOpen ? 'flex' : 'hidden md:block'}`} ref={searchRef}>
+        <form onSubmit={handleSearchSubmit} className="relative w-full">
           <Search className={`w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 ${isDark ? 'text-slate-400' : 'text-slate-400'}`} />
           <input
             type="text"
             value={searchQuery}
             onFocus={() => setShowSearchDropdown(true)}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search products, SKUs, materials, specifications..."
-            className={`w-full rounded-xl pl-10 pr-4 py-2 text-xs placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-sans border ${
+            placeholder="Search SKUs, specs, materials..."
+            className={`w-full rounded-xl pl-10 pr-8 py-2 text-xs placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-sans border ${
               isDark
                 ? 'bg-surface-elevated border-surface-border text-slate-100'
                 : 'bg-slate-50 border-slate-200 text-slate-900 focus:bg-white'
@@ -151,13 +175,24 @@ export const Topbar: React.FC = () => {
         )}
       </div>
 
-      {/* Action Utilities, Demo Mode Picker & Theme Switcher */}
-      <div className="flex items-center gap-3">
+        {/* Action Utilities, Demo Mode Picker & Theme Switcher */}
+      <div className="flex items-center gap-2 sm:gap-3">
+        {/* Mobile Search Toggle */}
+        <button
+          onClick={() => setIsMobileSearchOpen((prev) => !prev)}
+          className={`p-2 rounded-xl border md:hidden transition-all ${
+            isDark ? 'bg-surface-elevated text-slate-300 border-surface-border' : 'bg-slate-100 text-slate-700 border-slate-200'
+          }`}
+          aria-label="Toggle search bar"
+        >
+          <Search className="w-4 h-4" />
+        </button>
+
         {/* Demo Mode Trigger */}
         <div className="relative" ref={demoRef}>
           <button
             onClick={() => setShowDemoDropdown((prev) => !prev)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-mono font-semibold transition-all ${
+            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border text-xs font-mono font-semibold transition-all ${
               isDark
                 ? 'bg-indigo-950/40 border-indigo-500/30 text-indigo-300 hover:bg-indigo-900/40'
                 : 'bg-indigo-50 border-indigo-200 text-indigo-700 hover:bg-indigo-100'
@@ -166,6 +201,7 @@ export const Topbar: React.FC = () => {
           >
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span className="hidden sm:inline">DEMO DATASET</span>
+            <span className="sm:hidden text-[10px]">DEMO</span>
             <ChevronDown className="w-3.5 h-3.5" />
           </button>
 
@@ -204,8 +240,8 @@ export const Topbar: React.FC = () => {
           )}
         </div>
 
-        {/* B2B Export Buttons */}
-        <div className="flex items-center gap-1.5">
+        {/* B2B Export Buttons (hidden on narrow phone screens to avoid crowding) */}
+        <div className="hidden sm:flex items-center gap-1.5">
           <button
             onClick={() => dashboardApi.exportCatalog('json')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${

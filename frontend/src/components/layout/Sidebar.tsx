@@ -8,12 +8,21 @@ import {
   Settings as SettingsIcon,
   ShieldCheck,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  X
 } from 'lucide-react';
 import { VeridexaLogo } from '../brand/VeridexaLogo';
 import { useTheme } from '../../context/ThemeContext';
 
 const SIDEBAR_COLLAPSED_KEY = 'veridexa_sidebar_collapsed';
+
+const navItems = [
+  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/process', label: 'Process', fullLabel: 'Process Product', icon: UploadCloud, badge: 'P0 Core' },
+  { to: '/catalog', label: 'Catalog', fullLabel: 'Product Catalog', icon: Layers },
+  { to: '/validation', label: 'Validation', fullLabel: 'Validation Center', icon: CheckSquare, badge: 'Audit' },
+  { to: '/settings', label: 'Settings', fullLabel: 'Settings', icon: SettingsIcon },
+];
 
 export const Sidebar: React.FC = () => {
   const { isDark } = useTheme();
@@ -28,17 +37,9 @@ export const Sidebar: React.FC = () => {
     localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(isCollapsed));
   }, [isCollapsed]);
 
-  const navItems = [
-    { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { to: '/process', label: 'Process Product', icon: UploadCloud, badge: 'P0 Core' },
-    { to: '/catalog', label: 'Product Catalog', icon: Layers },
-    { to: '/validation', label: 'Validation Center', icon: CheckSquare, badge: 'Audit' },
-    { to: '/settings', label: 'Settings', icon: SettingsIcon },
-  ];
-
   return (
     <aside
-      className={`border-r flex flex-col shrink-0 h-screen sticky top-0 transition-all duration-300 z-40 ${
+      className={`hidden md:flex border-r flex-col shrink-0 h-screen sticky top-0 transition-all duration-300 z-40 ${
         isCollapsed ? 'w-20' : 'w-64'
       } ${
         isDark
@@ -124,7 +125,7 @@ export const Sidebar: React.FC = () => {
               >
                 <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'}`}>
                   <Icon className="w-5 h-5 shrink-0" />
-                  {!isCollapsed && <span>{item.label}</span>}
+                  {!isCollapsed && <span>{item.fullLabel}</span>}
                 </div>
 
                 {!isCollapsed && item.badge && (
@@ -150,7 +151,7 @@ export const Sidebar: React.FC = () => {
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <span>{item.label}</span>
+                    <span>{item.fullLabel}</span>
                     {item.badge && (
                       <span className="text-[9px] px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-300 font-mono">
                         {item.badge}
@@ -193,5 +194,149 @@ export const Sidebar: React.FC = () => {
         )}
       </div>
     </aside>
+  );
+};
+
+interface MobileNavDrawerProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ isOpen, onClose }) => {
+  const { isDark } = useTheme();
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 md:hidden overflow-hidden">
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+        onClick={onClose}
+      />
+
+      <div
+        className={`fixed inset-y-0 left-0 max-w-xs w-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-300 ${
+          isDark ? 'bg-surface border-r border-surface-border text-slate-100' : 'bg-white border-r border-slate-200 text-slate-900'
+        }`}
+      >
+        {/* Header */}
+        <div className={`p-4 border-b flex items-center justify-between ${isDark ? 'border-surface-border' : 'border-slate-200'}`}>
+          <VeridexaLogo variant="full" size="md" />
+          <button
+            onClick={onClose}
+            className={`p-2 rounded-xl border transition-all ${
+              isDark ? 'bg-surface-elevated text-slate-400 hover:text-white border-surface-border' : 'bg-slate-100 text-slate-600 hover:text-slate-900 border-slate-200'
+            }`}
+            aria-label="Close navigation menu"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Links */}
+        <div className="p-4 space-y-2 flex-1 overflow-y-auto">
+          <div className={`px-2 text-[10px] font-bold uppercase tracking-wider mb-2 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+            Navigation
+          </div>
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                onClick={onClose}
+                className={({ isActive }) =>
+                  `flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-semibold transition-all ${
+                    isActive
+                      ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20'
+                      : isDark
+                      ? 'text-slate-300 hover:bg-surface-elevated'
+                      : 'text-slate-700 hover:bg-slate-100'
+                  }`
+                }
+              >
+                <div className="flex items-center gap-3">
+                  <Icon className="w-5 h-5" />
+                  <span>{item.fullLabel}</span>
+                </div>
+                {item.badge && (
+                  <span
+                    className={`text-[10px] px-2 py-0.5 rounded font-mono ${
+                      isDark
+                        ? 'bg-slate-800 text-slate-300 border border-slate-700'
+                        : 'bg-slate-100 text-slate-600 border border-slate-200'
+                    }`}
+                  >
+                    {item.badge}
+                  </span>
+                )}
+              </NavLink>
+            );
+          })}
+        </div>
+
+        {/* Footer */}
+        <div className={`p-4 border-t ${isDark ? 'border-surface-border bg-surface/50' : 'border-slate-200 bg-slate-50'}`}>
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            </span>
+            <span className={`text-xs font-semibold ${isDark ? 'text-slate-300' : 'text-slate-800'}`}>
+              Veridexa Engine Active
+            </span>
+          </div>
+          <p className={`text-[11px] mt-1 font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+            Dual Deterministic & Semantic Validation
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const MobileBottomNav: React.FC = () => {
+  const { isDark } = useTheme();
+
+  return (
+    <nav
+      className={`md:hidden fixed bottom-0 left-0 right-0 z-40 border-t backdrop-blur-lg px-2 py-1.5 transition-all duration-200 ${
+        isDark
+          ? 'bg-surface/90 border-surface-border text-slate-300'
+          : 'bg-white/90 border-slate-200 text-slate-600 shadow-lg shadow-slate-900/10'
+      }`}
+      aria-label="Mobile Navigation"
+    >
+      <div className="grid grid-cols-5 gap-1 items-center justify-items-center">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          return (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                `flex flex-col items-center justify-center py-1 px-2 rounded-xl w-full text-center transition-all ${
+                  isActive
+                    ? 'text-indigo-600 dark:text-indigo-400 font-bold'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                }`
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <div className={`p-1 rounded-lg transition-transform ${isActive ? 'scale-110 bg-indigo-500/10' : ''}`}>
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <span className="text-[10px] tracking-tight font-medium mt-0.5 truncate max-w-[56px]">
+                    {item.label}
+                  </span>
+                </>
+              )}
+            </NavLink>
+          );
+        })}
+      </div>
+    </nav>
   );
 };

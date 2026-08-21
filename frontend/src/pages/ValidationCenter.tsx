@@ -156,13 +156,13 @@ export const ValidationCenter: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. Filter Tabs */}
-      <div className={`flex items-center gap-2 p-1.5 rounded-xl border w-fit ${
+      {/* 2. Filter Tabs (touch scrollable on mobile phones) */}
+      <div className={`flex items-center gap-1.5 p-1.5 rounded-xl border overflow-x-auto max-w-full no-scrollbar shrink-0 ${
         isDark ? 'bg-surface border-surface-border' : 'bg-slate-100 border-slate-200'
       }`}>
         <button
           onClick={() => setActiveTab('ALL')}
-          className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
+          className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
             activeTab === 'ALL'
               ? 'bg-indigo-600 text-white shadow-md'
               : isDark ? 'text-slate-400 hover:text-slate-200' : 'text-slate-600 hover:text-slate-900'
@@ -172,7 +172,7 @@ export const ValidationCenter: React.FC = () => {
         </button>
         <button
           onClick={() => setActiveTab('CONFLICT')}
-          className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+          className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap ${
             activeTab === 'CONFLICT'
               ? 'bg-rose-600 text-white shadow-md'
               : isDark ? 'text-slate-400 hover:text-slate-200' : 'text-slate-600 hover:text-slate-900'
@@ -183,7 +183,7 @@ export const ValidationCenter: React.FC = () => {
         </button>
         <button
           onClick={() => setActiveTab('ANOMALY')}
-          className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+          className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap ${
             activeTab === 'ANOMALY'
               ? 'bg-amber-600 text-white shadow-md'
               : isDark ? 'text-slate-400 hover:text-slate-200' : 'text-slate-600 hover:text-slate-900'
@@ -194,7 +194,7 @@ export const ValidationCenter: React.FC = () => {
         </button>
         <button
           onClick={() => setActiveTab('RULES')}
-          className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+          className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap ${
             activeTab === 'RULES'
               ? 'bg-emerald-600 text-white shadow-md'
               : isDark ? 'text-slate-400 hover:text-slate-200' : 'text-slate-600 hover:text-slate-900'
