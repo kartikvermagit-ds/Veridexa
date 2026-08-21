@@ -13,7 +13,8 @@ class ValidationService:
         "pressure_rating": ["bar", "psi", "mpa", "kpa", "class"],
         "length": ["mm", "cm", "m", "in"],
         "temperature_range": ["°c", "c", "°f", "f", "k"],
-        "voltage": ["v", "vac", "vdc", "kv"]
+        "voltage": ["v", "vac", "vdc", "kv"],
+        "flow_rate": ["m3/h", "m³/h", "gpm", "l/min", "l/s", "cfm"]
     }
 
     @classmethod
@@ -52,6 +53,26 @@ class ValidationService:
                     "field_name": "thread_size",
                     "message": "Thread size (e.g. M10) is recommended for fastener completeness."
                 })
+        elif "valve" in category.lower():
+            if "material" not in attr_map:
+                results.append({
+                    "rule_name": "REQUIRED_FIELD_CHECK",
+                    "rule_type": RuleType.DETERMINISTIC,
+                    "status": ValidationResultStatus.FAIL,
+                    "field_name": "material",
+                    "message": "Process Valves must specify body material."
+                })
+                has_failure = True
+        elif "fluid" in category.lower() or "pump" in category.lower():
+            if "material" not in attr_map:
+                results.append({
+                    "rule_name": "REQUIRED_FIELD_CHECK",
+                    "rule_type": RuleType.DETERMINISTIC,
+                    "status": ValidationResultStatus.FAIL,
+                    "field_name": "material",
+                    "message": "Fluid Handling equipment must specify casing/impeller material."
+                })
+                has_failure = True
 
         # 2. Unit and format checks
         for attr in attributes:

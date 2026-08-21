@@ -146,36 +146,48 @@ export const Dashboard: React.FC = () => {
       />
 
       {/* 6. Active Conflict Spotlight Card */}
-      <ActiveConflictSpotlight
-        onOpenConflictModal={() => setIsConflictModalOpen(true)}
-      />
+      {(() => {
+        const conflictProduct = productsRes?.data?.find((p) => p.validation_status === 'CONFLICT') || productsRes?.data?.[0];
+        const conflictId = conflictProduct?.id || 'mock-2';
+        return (
+          <>
+            <ActiveConflictSpotlight
+              productId={conflictId}
+              productName={conflictProduct?.product_name}
+              sku={conflictProduct?.sku}
+              conflictsCount={stats?.active_conflicts_count || 1}
+              onOpenConflictModal={() => setIsConflictModalOpen(true)}
+            />
 
-      {/* 7. Bottom Grid: Data Sources Inventory & Recent Processing Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <DataSourcesSummary />
-        <RecentProcessingList />
-      </div>
+            {/* 7. Bottom Grid: Data Sources Inventory & Recent Processing Activity */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <DataSourcesSummary />
+              <RecentProcessingList />
+            </div>
 
-      {/* Reusable Conflict Modal */}
-      {isConflictModalOpen && (
-        <ConflictModal
-          isOpen={isConflictModalOpen}
-          onClose={() => setIsConflictModalOpen(false)}
-          productId="mock-2"
-          conflict={{
-            rule_name: 'CROSS_DOCUMENT_CONFLICT_CHECK',
-            field_name: 'pressure_rating',
-            message: 'Discrepancy detected: Manufacturer Datasheet specifies 40 bar (PN40) while Distributor catalog states 63 bar.',
-            conflicting_data: {
-              source_a: { name: 'Swagelok_60_Series_Datasheet.pdf', value: '40 bar (PN40)', page: 2 },
-              source_b: { name: 'Distributor Online Catalog (URL)', value: '63 bar' }
-            }
-          }}
-          onResolved={() => {
-            refetch();
-          }}
-        />
-      )}
+            {/* Reusable Conflict Modal */}
+            {isConflictModalOpen && (
+              <ConflictModal
+                isOpen={isConflictModalOpen}
+                onClose={() => setIsConflictModalOpen(false)}
+                productId={conflictId}
+                conflict={{
+                  rule_name: 'CROSS_DOCUMENT_CONFLICT_CHECK',
+                  field_name: 'pressure_rating',
+                  message: 'Discrepancy detected: Manufacturer Datasheet specifies 40 bar (PN40) while Distributor catalog states 63 bar.',
+                  conflicting_data: {
+                    source_a: { name: 'Swagelok_60_Series_Datasheet.pdf', value: '40 bar (PN40)', page: 2 },
+                    source_b: { name: 'Distributor Online Catalog (URL)', value: '63 bar' }
+                  }
+                }}
+                onResolved={() => {
+                  refetch();
+                }}
+              />
+            )}
+          </>
+        );
+      })()}
     </div>
   );
 };

@@ -96,6 +96,29 @@ class ProcessingService:
                     raw_attrs
                 )
 
+                # AI Semantic Validation
+                ai_val = await llm.validate_product(extracted_data, document_text)
+                for anomaly in ai_val.get("anomalies", []):
+                    sev = anomaly.get("severity", "WARNING")
+                    status_enum = ValidationResultStatus.CONFLICT if sev == "CONFLICT" else (ValidationResultStatus.FAIL if sev == "FAIL" else ValidationResultStatus.WARNING)
+                    if sev == "CONFLICT":
+                        val_status = "CONFLICT"
+                        conflicts.append({
+                            "field_name": anomaly.get("attribute_name"),
+                            "value": str(anomaly.get("conflicting_values", "")),
+                            "reason": anomaly.get("message", "Semantic conflict detected")
+                        })
+                    val_results.append({
+                        "rule_name": f"SEMANTIC_{anomaly.get('attribute_name', 'SPEC').upper()}_CHECK",
+                        "rule_type": RuleType.AI_SEMANTIC,
+                        "status": status_enum,
+                        "field_name": anomaly.get("attribute_name"),
+                        "message": anomaly.get("message", "Semantic verification anomaly"),
+                        "conflicting_data": anomaly.get("conflicting_data")
+                    })
+
+                conflict_field_names = {c.get("field_name", "").lower() for c in conflicts if c.get("field_name")}
+
                 # ---------------- STAGE 4: ENRICHMENT ----------------
                 await job_repo.update_status(job_id, JobStatus.ENRICHING, "AI_DOMAIN_ENRICHMENT", 80)
                 await asyncio.sleep(0.5)
@@ -166,11 +189,14 @@ class ProcessingService:
                             char_start = pdf_ev["char_start"]
                             char_end = pdf_ev["char_end"]
 
+                    is_attr_conflict = name.lower() in conflict_field_names
+                    attr_status = AttributeStatus.CONFLICT if is_attr_conflict else AttributeStatus.VALIDATED
+
                     # Compute transparent confidence
                     attr_conf = ConfidenceService.calculate_attribute_confidence(
                         origin_type=OriginType.EXTRACTED,
                         has_exact_evidence=bool(ev_snippet),
-                        is_validated=True
+                        is_validated=not is_attr_conflict
                     )
 
                     attr_id = str(uuid.uuid4())
@@ -183,7 +209,7 @@ class ProcessingService:
                         data_type=attr_dict.get("data_type", "string"),
                         origin_type=OriginType.EXTRACTED,
                         confidence=attr_conf,
-                        status=AttributeStatus.VALIDATED if val_status != "CONFLICT" else AttributeStatus.CONFLICT
+                        status=attr_status
                     )
 
                     # Attach evidence
@@ -230,6 +256,20 @@ class ProcessingService:
                             confidence=er.get("confidence", 0.85)
                         )
                     )
+
+                    # Also append as ProductAttribute if not present
+                    if not any(a.name.lower() == er["field_name"].lower() for a in product.attributes):
+                        product.attributes.append(
+                            ProductAttribute(
+                                id=str(uuid.uuid4()),
+                                product_id=product_id,
+                                name=er["field_name"],
+                                value=er["enriched_value"],
+                                origin_type=origin,
+                                confidence=er.get("confidence", 0.85),
+                                status=AttributeStatus.VALIDATED
+                            )
+                        )
 
                 # Save Product to Database
                 await product_repo.create(product)

@@ -45,6 +45,7 @@ async def list_products(
                 overall_confidence=p.overall_confidence,
                 validation_status=p.validation_status,
                 attribute_count=len(p.attributes) if p.attributes else 0,
+                source_count=len(p.sources) if getattr(p, "sources", None) else 1,
                 created_at=p.created_at,
                 updated_at=p.updated_at
             )

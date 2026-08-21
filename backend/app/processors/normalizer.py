@@ -12,8 +12,9 @@ class AttributeNormalizer:
 
     # Material standardizations
     MATERIAL_MAP = {
-        r"(?i)\b(ss\s*316|316\s*ss|aisi\s*316|sus\s*316|stainless\s*steel\s*316)\b": "SS316",
+        r"(?i)\b(ss\s*316|316\s*ss|aisi\s*316|sus\s*316|stainless\s*steel\s*316|cf8m)\b": "SS316",
         r"(?i)\b(ss\s*304|304\s*ss|aisi\s*304|sus\s*304|stainless\s*steel\s*304)\b": "SS304",
+        r"(?i)\b(high\s*chrome|high-chrome|chrome\s*iron|27%\s*cr)\b": "High-Chrome Alloy",
         r"(?i)\b(ptfe|teflon)\b": "PTFE",
         r"(?i)\b(monel\s*400)\b": "Monel 400",
         r"(?i)\b(hastelloy\s*c276)\b": "Hastelloy C276",
@@ -52,31 +53,38 @@ class AttributeNormalizer:
         """
         Parses composite string like 'M10 x 50mm' or 'M12-70' into (thread_size, length)
         """
-        match = re.search(r"(?i)(M\d+(?:\.\d+)?)\s*(?:[x×\*\-]\s*(\d+(?:\.\d+)?\s*(?:mm|cm|in)?))?", text)
+        match = re.search(r"(?i)\b(M\d+(?:\.\d+)?)\b(?:\s*(?:[x×\*\-]\s*(\d+(?:\.\d+)?\s*(?:mm|cm|in)?)))?", text)
+        thread = None
+        length = None
         if match:
             thread = match.group(1).upper()
-            length = match.group(2)
-            if length:
-                length = length.strip()
-                # Ensure space between number and unit: e.g. 50mm -> 50 mm
-                unit_match = re.search(r"^(\d+(?:\.\d+)?)\s*([a-zA-Z]+)?$", length)
+            raw_len = match.group(2)
+            if raw_len:
+                raw_len = raw_len.strip()
+                unit_match = re.search(r"^(\d+(?:\.\d+)?)\s*([a-zA-Z]+)?$", raw_len)
                 if unit_match:
                     num = unit_match.group(1)
                     unit = unit_match.group(2) or "mm"
                     length = f"{num} {unit}"
-            return thread, length
-        return None, None
+
+        # If length was not in composite, look for standalone length specification
+        if not length:
+            len_match = re.search(r"(?i)\b(?:nominal\s+)?length[:\s]+(\d+(?:\.\d+)?)\s*(mm|cm|m|in)\b", text)
+            if len_match:
+                length = f"{len_match.group(1)} {len_match.group(2)}"
+
+        return thread, length
 
     @classmethod
     def normalize_unit_value(cls, text: str) -> Tuple[str, Optional[str]]:
         """
-        Splits '16 bar' or '240V' into ('16', 'bar') or ('240', 'V')
+        Splits '16 bar', '240V', or '450 m3/h' into ('16', 'bar'), ('240', 'V'), or ('450', 'm3/h')
         """
         if not text:
             return "", None
         
-        # Check standard pattern: number + unit
-        match = re.search(r"^\s*([+-]?\d+(?:\.\d+)?)\s*([a-zA-Z°%]+(?:\/[a-zA-Z]+)?)\s*$", text)
+        # Check standard pattern: number + unit (supports numbers, superscripts, and compound units)
+        match = re.search(r"^\s*([+-]?\d+(?:\.\d+)?)\s*([a-zA-Z°%³²0-9]+(?:\/[a-zA-Z0-9]+)?)\s*$", text)
         if match:
             val = match.group(1)
             unit = match.group(2).strip()

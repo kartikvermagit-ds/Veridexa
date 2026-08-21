@@ -41,7 +41,7 @@ class ProductRepository:
         skip: int = 0,
         limit: int = 20
     ) -> Tuple[List[Product], int]:
-        query = select(Product).options(selectinload(Product.attributes))
+        query = select(Product).options(selectinload(Product.attributes), selectinload(Product.sources))
         
         if category:
             query = query.where(Product.category.ilike(f"%{category}%"))

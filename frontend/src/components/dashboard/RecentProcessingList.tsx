@@ -1,43 +1,62 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { Clock, ArrowRight, FileCheck, AlertTriangle } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { ConfidenceBadge } from '../common/ConfidenceBadge';
 import { ValidationBadge } from '../common/ValidationBadge';
+import { productsApi } from '../../api/products';
 
 export const RecentProcessingList: React.FC = () => {
   const navigate = useNavigate();
   const { isDark } = useTheme();
 
-  const recentItems = [
-    {
-      id: 'mock-2',
-      name: '2-Piece Stainless Steel Ball Valve',
-      sku: 'VLV-BV2-SS316-PN40',
-      time: '2 min ago',
-      confidence: 0.89,
-      status: 'CONFLICT' as const,
-      conflictNote: '1 pressure discrepancy flagged'
-    },
-    {
-      id: 'mock-1',
-      name: 'High-Tensile SS316 Hex Bolt',
-      sku: 'HEX-SS316-M10-50',
-      time: '8 min ago',
-      confidence: 0.98,
-      status: 'VALIDATED' as const,
-      conflictNote: null
-    },
-    {
-      id: 'mock-3',
-      name: 'Centrifugal Slurry Pump 100/75',
-      sku: 'PMP-CP-50HP-ANSI',
-      time: '14 min ago',
-      confidence: 0.95,
-      status: 'VALIDATED' as const,
-      conflictNote: null
-    }
-  ];
+  const { data: productsRes } = useQuery({
+    queryKey: ['recent-processing-products'],
+    queryFn: () => productsApi.list({ page_size: 5 })
+  });
+
+  const products = productsRes?.data || [];
+
+  const displayItems = products.length > 0
+    ? products.slice(0, 3).map((p) => ({
+        id: p.id,
+        name: p.product_name,
+        sku: p.sku,
+        time: 'Recently Indexed',
+        confidence: p.overall_confidence,
+        status: p.validation_status,
+        conflictNote: p.validation_status === 'CONFLICT' ? 'Discrepancy flagged' : null
+      }))
+    : [
+        {
+          id: 'mock-2',
+          name: '2-Piece Stainless Steel Ball Valve',
+          sku: 'VLV-BV2-SS316-PN40',
+          time: '2 min ago',
+          confidence: 0.89,
+          status: 'CONFLICT' as const,
+          conflictNote: '1 pressure discrepancy flagged'
+        },
+        {
+          id: 'mock-1',
+          name: 'High-Tensile SS316 Hex Bolt',
+          sku: 'HEX-SS316-M10-50',
+          time: '8 min ago',
+          confidence: 0.98,
+          status: 'VALIDATED' as const,
+          conflictNote: null
+        },
+        {
+          id: 'mock-3',
+          name: 'Centrifugal Slurry Pump 100/75',
+          sku: 'PMP-CP-50HP-ANSI',
+          time: '14 min ago',
+          confidence: 0.95,
+          status: 'VALIDATED' as const,
+          conflictNote: null
+        }
+      ];
 
   return (
     <div
@@ -68,7 +87,7 @@ export const RecentProcessingList: React.FC = () => {
       </div>
 
       <div className="space-y-2.5">
-        {recentItems.map((item) => (
+        {displayItems.map((item) => (
           <div
             key={item.id}
             onClick={() => navigate(`/catalog/${item.id}`)}

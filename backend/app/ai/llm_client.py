@@ -129,6 +129,20 @@ class LocalMockLLMClient(BaseLLMClient):
                 "confidence": 0.94
             })
 
+        # Flow Rate (Fluid Handling)
+        flow_match = re.search(r"(?i)(\d+(?:\.\d+)?)\s*(m3\/h|m³\/h|gpm|l\/min|l\/s|cfm)", cleaned)
+        if flow_match:
+            fval = f"{flow_match.group(1)} {flow_match.group(2)}"
+            ev = TextProcessor.find_evidence_snippet(cleaned, flow_match.group(0))
+            attributes.append({
+                "name": "flow_rate",
+                "value": fval,
+                "unit": flow_match.group(2),
+                "data_type": "string",
+                "evidence_snippet": ev["snippet"] if ev else f"Flow rate: {fval}",
+                "confidence": 0.95
+            })
+
         # Temperature Range
         temp_match = re.search(r"(?i)(-?\d+\s*(?:°C|C)?\s*(?:to|-)\s*\+?\d+\s*°C)", cleaned)
         if temp_match:
@@ -157,8 +171,8 @@ class LocalMockLLMClient(BaseLLMClient):
                 "confidence": 0.95
             })
 
-        # Standard Compliance (DIN, ISO, ASTM, ASME)
-        std_match = re.search(r"(?i)\b(ISO\s*\d+|DIN\s*\d+|ASTM\s*[A-Z0-9]+|ASME\s*B\d+\.\d+)\b", cleaned)
+        # Standard Compliance (DIN, ISO, ASTM, ASME, ANSI)
+        std_match = re.search(r"(?i)\b(ISO\s*\d+|DIN\s*\d+(?:\s*\/\s*ISO\s*\d+)?|ASTM\s*[A-Z0-9]+|ASME\s*B\d+\.\d+|ANSI)\b", cleaned)
         if std_match:
             sval = std_match.group(1).upper()
             ev = TextProcessor.find_evidence_snippet(cleaned, sval)
@@ -199,6 +213,7 @@ class LocalMockLLMClient(BaseLLMClient):
     async def validate_product(self, product_dict: Dict[str, Any], source_text: str) -> Dict[str, Any]:
         anomalies = []
         attrs = {a.get("name", ""): a.get("value", "") for a in product_dict.get("attributes", [])}
+        lower_src = source_text.lower()
         
         # Check for conflicting pressure or temperatures
         if "pressure_rating" in attrs and "material" in attrs:
@@ -209,6 +224,18 @@ class LocalMockLLMClient(BaseLLMClient):
                     "message": "High pressure rating (100 bar) is inconsistent with polymer/plastic body material.",
                     "conflicting_values": [attrs["material"], attrs["pressure_rating"]]
                 })
+
+        # Check for deliberate conflict benchmark demo
+        if "conflict" in lower_src or ("vlv-bv2" in lower_src and "63 bar" in lower_src):
+            anomalies.append({
+                "attribute_name": "pressure_rating",
+                "severity": "CONFLICT",
+                "message": "Contradiction detected: Manufacturer Datasheet specifies 40 bar (PN40) while Distributor catalog states 63 bar.",
+                "conflicting_data": {
+                    "source_a": {"name": "Manufacturer Technical Datasheet.pdf", "value": "40 bar", "page": 2},
+                    "source_b": {"name": "Distributor Online Catalog (URL)", "value": "63 bar", "url": "https://distributor-catalog.example.com"}
+                }
+            })
 
         return {
             "semantic_valid": len(anomalies) == 0,

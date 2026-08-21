@@ -87,6 +87,7 @@ class ProductListItem(BaseModel):
     overall_confidence: float
     validation_status: ValidationStatus
     attribute_count: int = 0
+    source_count: int = 1
     created_at: datetime
     updated_at: datetime
     model_config = ConfigDict(from_attributes=True)

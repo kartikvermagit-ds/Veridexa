@@ -91,7 +91,9 @@ class ProductService:
         product = await self.repo.get_by_id(product_id)
         if not product:
             raise NotFoundException("Product", product_id)
-        return await self.repo.delete_by_id(product_id)
+        await self.session.delete(product)
+        await self.session.commit()
+        return True
 
     async def revalidate_product(self, product_id: str) -> Dict[str, Any]:
         product = await self.repo.get_by_id(product_id)
@@ -110,21 +112,42 @@ class ProductService:
                 rule_type=r["rule_type"],
                 status=r["status"],
                 field_name=r.get("field_name"),
-                message=r["message"]
+                message=r["message"],
+                conflicting_data=r.get("conflicting_data")
             )
             product.validation_results.append(val_obj)
 
         product.validation_status = ValidationStatus(val_status)
+        
+        # Recalculate metrics
+        metrics = ConfidenceService.calculate_product_metrics(
+            [{"name": a.name, "value": a.value, "confidence": a.confidence} for a in product.attributes],
+            product.category
+        )
+        product.overall_confidence = metrics["overall_confidence"]
+        product.completeness = metrics["completeness"]
+        
         await self.repo.save(product)
+
+        serialized_results = []
+        for r in results:
+            serialized_results.append({
+                "rule_name": r["rule_name"],
+                "rule_type": r["rule_type"].value if hasattr(r["rule_type"], "value") else str(r["rule_type"]),
+                "status": r["status"].value if hasattr(r["status"], "value") else str(r["status"]),
+                "field_name": r.get("field_name"),
+                "message": r["message"],
+                "conflicting_data": r.get("conflicting_data")
+            })
 
         return {
             "product_id": product.id,
             "validation_status": product.validation_status.value,
             "total_checks": len(results),
-            "passed_checks": len([r for r in results if r["status"].value == "PASS"]),
-            "failed_checks": len([r for r in results if r["status"].value in ["FAIL", "WARNING"]]),
+            "passed_checks": len([r for r in results if (r["status"].value if hasattr(r["status"], "value") else str(r["status"])) == "PASS"]),
+            "failed_checks": len([r for r in results if (r["status"].value if hasattr(r["status"], "value") else str(r["status"])) in ["FAIL", "WARNING"]]),
             "conflicts_detected": len(conflicts),
-            "results": results
+            "results": serialized_results
         }
 
     async def enrich_product(self, product_id: str) -> Dict[str, Any]:
@@ -152,6 +175,31 @@ class ProductService:
                 confidence=item.get("confidence", 0.85)
             )
             product.enrichment_results.append(en_obj)
+
+            # Synchronize into product.attributes if not already existing
+            existing_attr = next((a for a in product.attributes if a.name.lower() == item["field_name"].lower()), None)
+            if existing_attr:
+                existing_attr.value = item["enriched_value"]
+                existing_attr.origin_type = origin
+                existing_attr.confidence = item.get("confidence", 0.85)
+            else:
+                product.attributes.append(
+                    ProductAttribute(
+                        id=str(uuid.uuid4()),
+                        product_id=product.id,
+                        name=item["field_name"],
+                        value=item["enriched_value"],
+                        origin_type=origin,
+                        confidence=item.get("confidence", 0.85),
+                        status=AttributeStatus.VALIDATED
+                    )
+                )
+
+        # Recalculate metrics
+        attr_dicts = [{"name": a.name, "value": a.value, "confidence": a.confidence} for a in product.attributes]
+        metrics = ConfidenceService.calculate_product_metrics(attr_dicts, product.category)
+        product.overall_confidence = metrics["overall_confidence"]
+        product.completeness = metrics["completeness"]
 
         await self.repo.save(product)
         return {
@@ -189,6 +237,12 @@ class ProductService:
 
         if remaining_conflicts == 0:
             product.validation_status = ValidationStatus.VALIDATED
+
+        # Recalculate metrics
+        attr_dicts = [{"name": a.name, "value": a.value, "confidence": a.confidence} for a in product.attributes]
+        metrics = ConfidenceService.calculate_product_metrics(attr_dicts, product.category)
+        product.overall_confidence = metrics["overall_confidence"]
+        product.completeness = metrics["completeness"]
 
         await self.repo.save(product)
         return {"success": True, "resolved_attribute": attribute_name, "value": selected_value}

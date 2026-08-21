@@ -4,10 +4,18 @@ import { AlertTriangle, ArrowRight, FileText, Globe, Wrench, ShieldAlert } from 
 import { useTheme } from '../../context/ThemeContext';
 
 interface ActiveConflictSpotlightProps {
+  productId?: string;
+  productName?: string;
+  sku?: string;
+  conflictsCount?: number;
   onOpenConflictModal?: () => void;
 }
 
 export const ActiveConflictSpotlight: React.FC<ActiveConflictSpotlightProps> = ({
+  productId,
+  productName = '2-Piece Stainless Steel Ball Valve',
+  sku = 'VLV-BV2-SS316-PN40',
+  conflictsCount = 1,
   onOpenConflictModal
 }) => {
   const navigate = useNavigate();
@@ -36,7 +44,7 @@ export const ActiveConflictSpotlight: React.FC<ActiveConflictSpotlightProps> = (
               </span>
             </div>
             <h4 className={`text-sm font-bold tracking-tight mt-0.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              2-Piece Stainless Steel Ball Valve (SKU: VLV-BV2-SS316-PN40)
+              {productName} (SKU: {sku})
             </h4>
           </div>
         </div>
@@ -45,7 +53,7 @@ export const ActiveConflictSpotlight: React.FC<ActiveConflictSpotlightProps> = (
           onClick={() => navigate('/validation')}
           className="text-xs text-rose-600 dark:text-rose-300 hover:underline font-semibold flex items-center gap-1 shrink-0"
         >
-          <span>All Conflicts (3)</span>
+          <span>All Conflicts ({conflictsCount})</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -104,7 +112,7 @@ export const ActiveConflictSpotlight: React.FC<ActiveConflictSpotlightProps> = (
 
         <div className="flex items-center gap-2">
           <button
-            onClick={() => navigate('/catalog/mock-2')}
+            onClick={() => navigate(productId ? `/catalog/${productId}` : '/validation')}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
               isDark
                 ? 'bg-surface-elevated hover:bg-slate-700 text-slate-300 border-surface-border'
