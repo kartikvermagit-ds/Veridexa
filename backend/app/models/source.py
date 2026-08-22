@@ -8,6 +8,7 @@ import enum
 
 class SourceType(str, enum.Enum):
     PDF = "PDF"
+    CSV = "CSV"
     TEXT = "TEXT"
     URL = "URL"
     CATALOG = "CATALOG"

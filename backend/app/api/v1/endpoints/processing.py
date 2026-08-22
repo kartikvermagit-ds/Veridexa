@@ -35,10 +35,17 @@ async def process_product(
     file_name = None
 
     if file:
-        if not file.filename.lower().endswith(".pdf") and not file.filename.lower().endswith(".txt"):
-            raise IngestionException("Unsupported file type. Only PDF and TXT files are accepted.")
+        fname_lower = (file.filename or "").lower()
+        if not (fname_lower.endswith(".pdf") or fname_lower.endswith(".csv") or fname_lower.endswith(".txt")):
+            raise IngestionException("Unsupported file type. Only PDF, CSV, and TXT files are accepted.")
         
-        source_type = "PDF" if file.filename.lower().endswith(".pdf") else "TEXT"
+        if fname_lower.endswith(".pdf"):
+            source_type = "PDF"
+        elif fname_lower.endswith(".csv"):
+            source_type = "CSV"
+        else:
+            source_type = "TEXT"
+            
         file_name = file.filename
         
         # Save file to uploads directory

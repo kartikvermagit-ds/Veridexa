@@ -191,7 +191,7 @@ Motor Power: 50 HP (37 kW) 460 V 3-Phase 60Hz.`
               }`}
             >
               <UploadCloud className="w-3.5 h-3.5" />
-              <span>Upload PDF</span>
+              <span>Upload Document</span>
             </button>
             <button
               onClick={() => setActiveTab('text')}
@@ -255,14 +255,14 @@ Motor Power: 50 HP (37 kW) 460 V 3-Phase 60Hz.`
               }`}>
                 <UploadCloud className="w-10 h-10 text-indigo-500 mb-3" />
                 <span className={`text-sm font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                  {selectedFile ? selectedFile.name : 'Click to browse or drag & drop industrial PDF'}
+                  {selectedFile ? selectedFile.name : 'Click to browse or drag & drop industrial document'}
                 </span>
                 <span className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                  Supported formats: PDF, TXT (Maximum file size: 15MB)
+                  Supported formats: PDF, CSV, TXT (Maximum file size: 15MB)
                 </span>
                 <input
                   type="file"
-                  accept=".pdf,.txt"
+                  accept=".pdf,.csv,.txt"
                   className="hidden"
                   onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
                 />

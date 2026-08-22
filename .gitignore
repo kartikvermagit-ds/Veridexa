@@ -36,3 +36,4 @@ frontend/.env
 .DS_Store
 Thumbs.db
 *.log
+*.mp4

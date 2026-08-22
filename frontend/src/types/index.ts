@@ -31,7 +31,7 @@ export interface Attribute {
 
 export interface Source {
   id: string;
-  source_type: 'PDF' | 'TEXT' | 'URL' | 'CATALOG';
+  source_type: 'PDF' | 'CSV' | 'TEXT' | 'URL' | 'CATALOG';
   file_name?: string;
   source_url?: string;
   checksum?: string;
