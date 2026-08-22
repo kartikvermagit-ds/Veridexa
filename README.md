@@ -6,7 +6,7 @@
 
 ---
 
-## 🚀 Overview
+## 🚀 Overview 
 
 **Veridexa** converts unstructured industrial product information (PDF datasheets, vendor tables, raw technical specs) into validated, grounded, and explainable product intelligence.
 
@@ -60,7 +60,7 @@ python -m uvicorn app.main:app --reload --port 8000
 ```
 - Interactive API Docs: `http://localhost:8000/docs`
 
-### 3. Frontend Setup
+### 3. Frontend Setup 
 ```bash
 cd frontend
 npm install
