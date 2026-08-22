@@ -6,7 +6,7 @@
 
 ---
 
-## 🚀 Overview purpose detail 
+## 🚀 Overview 
 
 **Veridexa** converts unstructured industrial product information (PDF datasheets, vendor tables, raw technical specs) into validated, grounded, and explainable product intelligence.
 
